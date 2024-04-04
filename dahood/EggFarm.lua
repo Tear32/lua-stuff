@@ -1,4 +1,4 @@
---yes its open source
+
 local Player = game.Players.LocalPlayer
 local Http = game:GetService("HttpService")
 local TPS = game:GetService("TeleportService")
@@ -8,7 +8,7 @@ local _place, _id = game.PlaceId, game.JobId
 
 if not game.Loaded then repeat wait(1) until game.Loaded end;
 
-if config.main.safemode then
+if getgenv().config.main.safemode then
     if not game.Loaded then repeat wait(1) until game.Loaded end;
     Player.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(9999999,9999999,9999999)
     Player.Character:WaitForChild("HumanoidRootPart").Anchored = true
@@ -16,6 +16,7 @@ end
 
 local _servers = Api.._place.."/servers/Public?sortOrder=Asc&limit=10"
 
+local skippedserver = {}
 function ListServers(cursor)
     local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
     return Http:JSONDecode(Raw)
@@ -66,22 +67,22 @@ local embed = {
     title = "8ho.solutions Egg Farm",
     description = "Server Egg Collection Status:",
     color = 000000, 
-    fields = {}, 
+    fields = {},  -- Initialize fields as an empty table
     footer = {
         text = os.date("%Y-%m-%d %H:%M:%S")
     },
-    username = config.webhook.username,
+    username = getgenv().config.webhook.username,
     url = "https://cdn.discordapp.com/attachments/1041717562272141334/1225099564734877767/money-finance-icon-free-to-pull-the-dollar-sign-creative-removebg-preview.png?ex=661fe5e1&is=660d70e1&hm=3261e1e9d27dce609d0d202625987f4b7ba7bd5a2d47a0c7e995472504d2632f&"
 }
 
-if config.webhook.messages.amountofeggs then
+if getgenv().config.webhook.messages.amountofeggs then
     table.insert(embed.fields, {
         name = "Eggs In Server:",
         value = eggCountforwebhook,
         inline = true,
     })
 end
-if config.webhook.messages.gameid then
+if getgenv().config.webhook.messages.gameid then
     table.insert(embed.fields, {
         name = "Id:",
         value = game.PlaceId,
@@ -89,7 +90,7 @@ if config.webhook.messages.gameid then
     })
 end
 
-if config.webhook.messages.server then
+if getgenv().config.webhook.messages.server then
     table.insert(embed.fields, {
         name = "Server:",
         value = game.JobId,
@@ -97,7 +98,7 @@ if config.webhook.messages.server then
     })
 end
 
-if config.webhook.messages.currentaccount then
+if getgenv().config.webhook.messages.currentaccount then
     table.insert(embed.fields, {
         name = "Account Name:",
         value = game.Players.LocalPlayer.Name,
@@ -122,23 +123,23 @@ end
 local function CollectEggs()
     local eggCount = CountEggs()
     if eggCount > 0 then
-        if config.webhook.enabled then
-            WebhookRequest(config.webhook.webhookUrl, embed)
+        if getgenv().config.webhook.enabled then
+            WebhookRequest(getgenv().config.webhook.webhookUrl, embed)
         end
     end
-    print(config.main.logs.EggCountMessage:format(eggCount))
+    print(getgenv().config.main.logs.EggCountMessage:format(eggCount))
     WaitForCharacterLoad()
-    if config.main.safemode then
+    if getgenv().config.main.safemode then
         Player.Character.HumanoidRootPart.Anchored = false
     end
     for _, v in pairs(workspace.Ignored:GetChildren()) do
         if string.find(v.Name, "Egg") then
             Player.Character.HumanoidRootPart.CFrame = v.CFrame + Vector3.new(0, 3, 0)
-            wait(config.main.EggCollectDelay)
+            wait(getgenv().config.main.EggCollectDelay)
         end
     end
     local collectedCount = CountEggs()
-    print(config.main.logs.CollectedCountMessage:format(eggCount - collectedCount))
+    print(getgenv().config.main.logs.CollectedCountMessage:format(eggCount - collectedCount))
     Player.Character.HumanoidRootPart.Anchored = true
 end
 
@@ -160,8 +161,8 @@ local serverHopped = true
 while true do
     if serverHopped then
         CollectEggs()
-        print(config.main.logs.serverhopmessage)
-        wait(config.main.Delay)
+        print(getgenv().config.main.logs.serverhopmessage)
+        wait(getgenv().config.main.Delay)
         TeleportToRandomServer()
         serverHopped = false
     end
