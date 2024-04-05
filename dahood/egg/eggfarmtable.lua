@@ -33,5 +33,5 @@ getgenv().config = {
         }
     }
 }
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Tear32/lua-stuff/main/dahood/EggFarm.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Tear32/lua-stuff/main/dahood/egg/EggFarm.lua"))()
     
