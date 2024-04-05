@@ -32,6 +32,6 @@ getgenv().config = {
             currentaccount = true,  --shows username + displayname
         }
     }
-
+}
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Tear32/lua-stuff/main/dahood/EggFarm.lua"))()
     
